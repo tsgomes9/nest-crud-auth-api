@@ -10,7 +10,7 @@ import { UserService } from "src/user/user.service";
 export class AuthService {
     constructor(private readonly JWTService: JwtService, private readonly prisma: PrismaService, private readonly userService: UserService) { }
 
-    async createToken(user: users) {
+    createToken(user: users) {
         return {
             accessToken: this.JWTService.sign({
                 sub: user.idusers,
@@ -24,7 +24,7 @@ export class AuthService {
         }
     }
 
-    async checkToken(token: string) {
+    checkToken(token: string) {
 
         try {
             const data = this.JWTService.verify(token, {
@@ -36,6 +36,16 @@ export class AuthService {
             throw new BadRequestException(e.message);
         }
 
+    }
+
+    isValidToken(token: string) {
+        try {
+            this.checkToken(token)
+            return true
+        }
+        catch (e) {
+            return false
+        }
     }
 
     async login(email: string, password: string) {
